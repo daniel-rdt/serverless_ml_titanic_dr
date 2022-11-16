@@ -79,6 +79,7 @@ def get_random_passenger():
     else:
         titanic_df = victim_df
         print("Victim added")
+    print(titanic_df)
 
     return titanic_df
 

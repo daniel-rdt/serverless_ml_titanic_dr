@@ -56,8 +56,8 @@ def g():
     results = confusion_matrix(y_test, y_pred)
 
     # Create the confusion matrix as a figure
-    df_cm = pd.DataFrame(results, ['True Survivor', 'True Victim'],
-                         ['Pred Survivor', 'Pred Victim'])
+    df_cm = pd.DataFrame(results, ['True Victim', 'True Survivor'],
+                         ['Pred Victim', 'Pred Survivor'])
     cm = sns.heatmap(df_cm, annot=True)
     fig = cm.get_figure()
 
