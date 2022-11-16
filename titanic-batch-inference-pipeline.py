@@ -55,8 +55,8 @@ def g():
     
     titanic_fg = fs.get_feature_group(name="titanic_modal", version=1)
     df = titanic_fg.read()
-    # print(df["Survived"])
-    label = df.iloc[-1]["Survived"]
+    # print(df.iloc[-1])
+    label = df.iloc[-1]["survived"]
     if label == 1:
         label_str = "survivor"
     else:
@@ -100,12 +100,12 @@ def g():
     labels = history_df[['label']]
 
     # Only create the confusion matrix when our iris_predictions feature group has examples of all 3 iris flowers
-    print("Number of different flower predictions to date: " + str(predictions.value_counts().count()))
+    print("Number of different titanic passenger predictions to date: " + str(predictions.value_counts().count()))
     if predictions.value_counts().count() == 2:
         results = confusion_matrix(labels, predictions)
     
-        df_cm = pd.DataFrame(results, ['True Setosa', 'True Versicolor', 'True Virginica'],
-                             ['Pred Setosa', 'Pred Versicolor', 'Pred Virginica'])
+        df_cm = pd.DataFrame(results, ['True Survivor', 'True Victim'],
+                             ['Pred Survivor', 'Pred Victim'])
     
         cm = sns.heatmap(df_cm, annot=True)
         fig = cm.get_figure()
