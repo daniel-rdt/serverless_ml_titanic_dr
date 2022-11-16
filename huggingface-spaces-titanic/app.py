@@ -89,4 +89,4 @@ demo = gr.Interface(
     # outputs=gr.outputs.Textbox())
     outputs=gr.Image(type="pil"))
 
-demo.launch()
+demo.launch(share=True)
