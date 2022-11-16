@@ -3,7 +3,7 @@ import modal
 from titanic_feature_prep import titanic_prep
     
 BACKFILL=False
-LOCAL=True
+LOCAL=False
 
 if LOCAL == False:
    stub = modal.Stub()
@@ -70,7 +70,7 @@ def get_random_passenger():
                                             fare_min=0, fare_max=263, sex_choices=["male","female"],
                                             embarked_choices=["C","Q","S"])
 
-    # randomly pick one of these 3 and write it to the featurestore
+    # randomly pick one of these 2 and write it to the featurestore
     pick_random = random.uniform(0,2)
 
     if pick_random >= 1:
