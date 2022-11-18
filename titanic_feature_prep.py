@@ -14,7 +14,7 @@ def titanic_prep():
     # print(f"Nan values in the dataset: \n {titanic_df.isna().sum()}")
 
     # round up the Age feature where not NA, so infants that are younger than 1 are now 1 for easier and more consistent future application
-    titanic_df.loc[titanic_df.Age < 1,"Age"] = np.ceil(titanic_df.loc[titanic_df.Age < 1,"Age"])
+    titanic_df.loc[titanic_df.Age.notna(),"Age"] = np.ceil(titanic_df.loc[titanic_df.Age.notna(),"Age"])
 
     # create array of random ages to fill the missing age value with
     random_ages = np.random.randint(titanic_df.Age.min(), titanic_df.Age.max(),titanic_df.Age.isnull().sum())
