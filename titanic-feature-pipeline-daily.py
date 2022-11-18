@@ -107,5 +107,4 @@ if __name__ == "__main__":
     if LOCAL == True :
         g()
     else:
-        with stub.deploy("feature_pipeline_daily"):
-            f()
+        stub.deploy("feature_pipeline_daily")
