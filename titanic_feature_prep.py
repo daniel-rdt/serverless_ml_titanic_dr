@@ -1,4 +1,7 @@
 def titanic_prep():
+    """
+    Returns a DataFrame containing the prepped clean titanic dataset
+    """
     # import necessary packages
     import pandas as pd
     import numpy as np

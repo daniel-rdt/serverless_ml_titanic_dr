@@ -41,7 +41,7 @@ def g():
                                           labels=["Survived"],
                                           query=query)    
 
-    # Read training data, randomly split into train/test sets of features (X) and labels (y) with 20/80 split      
+    # Read training data, randomly split into train/test sets of features (X) and labels (y) with 80/20 split      
     X_train, X_test, y_train, y_test = feature_view.train_test_split(0.2)
 
     # Train model with the Scikit-learn K-nearest-neighbors algorithm using our features (X_train) and labels (y_train)

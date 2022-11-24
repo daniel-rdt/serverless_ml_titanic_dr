@@ -61,6 +61,8 @@ def get_random_passenger():
     import pandas as pd
     import random
 
+    # create survivor or victim; ranges are min, max values and existing categories from original titanic dataset features
+    # filtered for either survivors or victims respectively
     survivor_df = generate_passenger    (1, pclass_min=1, pclass_max=4, age_min=1, age_max=81,
                                             sibsp_min=0, sibsp_max=5, parch_min=0, parch_max=6,
                                             fare_min=0, fare_max=513, sex_choices=["male","female"],
@@ -91,11 +93,14 @@ def g():
     project = hopsworks.login()
     fs = project.get_feature_store()
 
+    # either use whole prepped dataset as in titanic-feature-pipeline to add to feature group
     if BACKFILL == True:
         titanic_df = titanic_prep()
+    # or use newly created passenger to add to feature group
     else:
         titanic_df = get_random_passenger()
 
+    # add to feature group
     titanic_fg = fs.get_or_create_feature_group(
         name="titanic_modal",
         version=1,

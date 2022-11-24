@@ -21,6 +21,7 @@ def g():
     # import and prep data by calling prep function
     titanic_df = titanic_prep()
 
+    # create new feature group for prepped titanic dataset and upload titanic_df
     titanic_fg = fs.get_or_create_feature_group(
         name="titanic_modal",
         version=1,

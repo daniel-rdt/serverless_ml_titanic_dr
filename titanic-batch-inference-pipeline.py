@@ -26,17 +26,21 @@ def g():
     project = hopsworks.login()
     fs = project.get_feature_store()
     
+    # get model from model registry from hopswork
     mr = project.get_model_registry()
     model = mr.get_model("titanic_modal", version=1)
     model_dir = model.download()
     model = joblib.load(model_dir + "/titanic_model.pkl")
     
+    # get batch data from hopsworks feature view
     feature_view = fs.get_feature_view(name="titanic_modal", version=1)
     batch_data = feature_view.get_batch_data()
     
+    # make prediciton on whole batch data set
     y_pred = model.predict(batch_data)
     # print(y_pred)
     
+    # determine outcome of the latest prediction and download the appropriate image from GitHub
     passenger = y_pred[y_pred.size-1]
     if passenger == 1:
         passenger_str = "survivor"
@@ -44,18 +48,24 @@ def g():
         passenger_str = "victim"
     passenger_url = "https://raw.githubusercontent.com/daniel-rdt/serverless_ml_titanic_dr/main/assets/" + passenger_str + ".png"
     
+    # print the prediction in console
     if passenger == 1:
         print("Passenger predicted: Survivor!")
     else:
         print("Passenger predicted: Victim!")
+
+    # save image in dataset api
     img = Image.open(requests.get(passenger_url, stream=True).raw)            
     img.save("./latest_passenger.png")
     dataset_api = project.get_dataset_api()    
     dataset_api.upload("./latest_passenger.png", "Resources/images", overwrite=True)
     
+    # get feature group and get latest passenger
     titanic_fg = fs.get_feature_group(name="titanic_modal", version=1)
     df = titanic_fg.read()
     # print(df.iloc[-1])
+
+    # determine actual label of passenger and download the appropriate image from GitHub
     label = df.iloc[-1]["survived"]
     if label == 1:
         label_str = "survivor"
@@ -67,16 +77,19 @@ def g():
     else:
         print("Passenger actual: Victim!")
 
+    # save the image in dataset api
     img = Image.open(requests.get(label_url, stream=True).raw)            
     img.save("./actual_passenger.png")
     dataset_api.upload("./actual_passenger.png", "Resources/images", overwrite=True)
     
+    # get prediction feature group from hopsworks or create new one
     monitor_fg = fs.get_or_create_feature_group(name="titanic_predictions",
                                                 version=1,
                                                 primary_key=["datetime"],
                                                 description="Titanic Passenger Prediction/Outcome Monitoring"
                                                 )
     
+    # create datetetime information for prediction
     now = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     data = {
         'prediction': [passenger],
@@ -84,6 +97,7 @@ def g():
         'datetime': [now],
        }
     monitor_df = pd.DataFrame(data)
+    # insert newest prediction to predictions feature group
     monitor_fg.insert(monitor_df, write_options={"wait_for_job" : False})
     
     history_df = monitor_fg.read()
@@ -92,6 +106,7 @@ def g():
     history_df = pd.concat([history_df, monitor_df])
 
 
+    # get last 5 predictions and store image on dataset api
     df_recent = history_df.tail(5)
     dfi.export(df_recent, './df_recent.png', table_conversion = 'matplotlib')
     dataset_api.upload("./df_recent.png", "Resources/images", overwrite=True)
@@ -99,17 +114,18 @@ def g():
     predictions = history_df[['prediction']]
     labels = history_df[['label']]
 
-    # Only create the confusion matrix when our iris_predictions feature group has examples of all 3 iris flowers
+    # Only create the confusion matrix when our titanic_predictions feature group has examples of both survivor and victim
     print("Number of different titanic passenger predictions to date: " + str(predictions.value_counts().count()))
     if predictions.value_counts().count() == 2:
         results = confusion_matrix(labels, predictions)
     
         df_cm = pd.DataFrame(results, ['True Victim', 'True Survivor'],
                              ['Pred Victim', 'Pred Survivor'])
-    
+
         cm = sns.heatmap(df_cm, annot=True)
         fig = cm.get_figure()
         fig.savefig("./confusion_matrix.png")
+        # save confusion matrix image to dataset api
         dataset_api.upload("./confusion_matrix.png", "Resources/images", overwrite=True)
     else:
         print("You need 2 different titanic passenger predictions to create the confusion matrix.")
