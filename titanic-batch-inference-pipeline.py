@@ -23,7 +23,7 @@ def g():
     import seaborn as sns
     import requests
 
-    project = hopsworks.login()
+    project = hopsworks.login(api_key_value='U6PiDFwDVDQHP26X.XhXDZQ9QKiNwafhLh11PUntcyYW5Zp8aoXhoj1IJTGHDBu8owQJUKbFClHaehyMU')
     fs = project.get_feature_store()
     
     # get model from model registry from hopswork
