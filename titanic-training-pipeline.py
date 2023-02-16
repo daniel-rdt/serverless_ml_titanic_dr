@@ -25,7 +25,7 @@ def g():
     from hsml.model_schema import ModelSchema
     import joblib
 
-    project = hopsworks.login()
+    project = hopsworks.login(api_key_value='U6PiDFwDVDQHP26X.XhXDZQ9QKiNwafhLh11PUntcyYW5Zp8aoXhoj1IJTGHDBu8owQJUKbFClHaehyMU')
     # get feature store from hopsworks
     fs = project.get_feature_store()
 
